@@ -41,7 +41,13 @@ class Search:
         URL = f"https://openlibrary.org/search.json?title={search_term_formatted}&fields={fields_formatted}&limit={limit}"
 
         response = requests.get(URL).json()
-        response_formatted = f"Title: {response['docs'][0]['title']}\nAuthor: {response['docs'][0]['author_name'][0]}"
+
+        if response["docs"]:
+            title = response["docs"][0].get("title", "Unknown Title")
+            authors = response["docs"][0].get("author_name", ["Unknown Author"])
+            response_formatted = f"Title: {title}\nAuthor: {authors[0]}"
+        else:
+            response_formatted = "No results found."
         return response_formatted
 
 
@@ -51,7 +57,8 @@ class Search:
 # results_json = Search().get_search_results_json()
 # print(json.dumps(results_json, indent=1))
 
-search_term = input("Enter a book title: ")
-result = Search().get_user_search_results(search_term)
-print("Search Result:\n")
-print(result)
+if __name__ == "__main__":
+    search_term = input("Enter a book title: ")
+    result = Search().get_user_search_results(search_term)
+    print("Search Result:\n")
+    print(result)
